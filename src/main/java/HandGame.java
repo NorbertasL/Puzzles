@@ -8,46 +8,39 @@ public class HandGame {
         String winOrder[] = {"C","P","R","L","S","C","L","P","S","R","C"};
         int N = in.nextInt();
         for (int i = 0; i < N; i++) {
-            int NUMPLAYER = in.nextInt();
-            String SIGNPLAYER = in.next();
-            players.add(new Player(NUMPLAYER, SIGNPLAYER));
+            players.add(new Player(in.nextInt(), in.next()));
         }
-        // Write an answer using System.out.println()
-        // To debug: System.err.println("Debug messages...");
         while(players.size() > 1){
             for(int i = 0; i < players.size(); i++){
                 System.err.println("Number of players:"+players.size());
                 System.err.println("Index of:"+i);
                 //checking for tie
-                if(players.get(i).getMove().equals(players.get(i+1).getMove())){
+                Player p1 = players.get(i);
+                Player p2 = players.get(i+1);
+                if(p1.getMove().equals(p2.getMove())){
                     System.err.println("TIE!!!!!");
-                    if(players.get(i).getId()<players.get(i+1).getId()){
+                    //Resolving the tie
+                    if(p1.getId()<p2.getId()){
                         System.err.println("P1 WINS");
-                        players.get(i).addOpponent(players.get(i+1).getId());
-                        players.remove(i+1);
+                        setWinner(p1, p2, players);
                     }else{
                         System.err.println("P2 WINS");
-                        players.get(i+1).addOpponent(players.get(i).getId());
-                        players.remove(i);
+                        setWinner(p2, p1, players);
                     }
                     continue;
                 }
-                String pOneMove = players.get(i).getMove();
-                String pTwoMove = players.get(i+1).getMove();
-                System.err.println("P1:"+pOneMove + "  P2:"+pTwoMove);
+                System.err.println("P1:"+p1.getMove() + "  P2:"+p2.getMove());
                 for(int j = 0; j < winOrder.length-1; j++){
-                    if(pOneMove.equals(winOrder[j])){
-                        if(pTwoMove.equals(winOrder[j+1])){
+                    if(p1.getMove().equals(winOrder[j])){
+                        if(p2.getMove().equals(winOrder[j+1])){
                             System.err.println("P1 WINS");
-                            players.get(i).addOpponent(players.get(i+1).getId());
-                            players.remove(i+1);
+                            setWinner(p1, p2, players);
                         }
                     }
-                    if(pTwoMove.equals(winOrder[j])){
-                        if(pOneMove.equals(winOrder[j+1])){
+                    if(p2.getMove().equals(winOrder[j])){
+                        if(p1.getMove().equals(winOrder[j+1])){
                             System.err.println("P2 WINS");
-                            players.get(i+1).addOpponent(players.get(i).getId());
-                            players.remove(i);
+                            setWinner(p2, p1, players);
                         }
                     }
                 }
@@ -57,6 +50,10 @@ public class HandGame {
         System.out.println(players.get(0).getId());
         System.out.println(players.get(0).getOpponents());
         //System.out.println("WHO IS THE WINNER?");
+    }
+    private static void setWinner(Player winner, Player loser, List<Player> players){
+        winner.addOpponent(loser.getId());
+        players.remove(loser);
     }
 
 }
